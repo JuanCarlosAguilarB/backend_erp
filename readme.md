@@ -1,6 +1,6 @@
-# Django Rest Framework Backend template Project  using Docker
+# Django Rest Framework Backend for Enterprise resource planning (ERP)
 
-This is a Django Rest Framework template project that uses Docker to manage the development and **production** environment. Additionally, it includes configuration for Dockerizing the database.
+This is a Django Rest Framework template backend project that uses Docker to manage the development and **production** environment. Additionally, it includes configuration for Dockerizing the database.
 
 ## Prerequisites
 
