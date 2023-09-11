@@ -1,1 +1,0 @@
-from .products_viewset import ProductsViewSet
