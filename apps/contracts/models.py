@@ -23,9 +23,10 @@ class Entity(models.Model):
 
 class Contract(models.Model):
 
-    name = models.CharField(max_length=100)
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
-    number_contrat = models.CharField(max_length=100)
+    # entity = models.ForeignKey(Entity, on_delete=models.CASCADE,
+    #                            null=True, blank=True)
+    number_contrat = models.CharField(max_length=100, primary_key=True)
+    company = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -55,18 +56,18 @@ class OrdenOfWork(models.Model):
     def remaining_days(self):
         return (self.delivery_date - timezone.now()).days
 
-    def save(self, *args, **kwargs):
+    # def save(self, *args, **kwargs):
 
-        # sum of amount_of_order of all orders
-        sum_amount_of_order = OrdenOfWork.objects.filter(
-            contract=self.contract).aggregate(models.Sum('amount_of_order'))['amount_of_order__sum']
+    #     # sum of amount_of_order of all orders
+    #     sum_amount_of_order = OrdenOfWork.objects.filter(
+    #         contract=self.contract).aggregate(models.Sum('amount_of_order'))['amount_of_order__sum']
 
-        # throw error if the sum of amount_of_order of all orders is greater than amount of contract
-        if sum_amount_of_order > self.contract.amount:
-            raise ValueError(
-                'The amount of order is greater than amount of contract')
+    #     # throw error if the sum of amount_of_order of all orders is greater than amount of contract
+    #     if sum_amount_of_order > self.contract.amount:
+    #         raise ValueError(
+    #             'The amount of order is greater than amount of contract')
 
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.id} - No order: {self.number_orden}'
@@ -96,14 +97,12 @@ class StateLot(models.Model):
 
 class NoteLot(models.Model):
 
-    name = models.CharField(max_length=100)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Lot(models.Model):
 
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     orden_of_work = models.ForeignKey(OrdenOfWork, on_delete=models.CASCADE)
     item_orden_of_work = models.ForeignKey(
         ItemsOrdenOfWork, on_delete=models.CASCADE)
@@ -114,6 +113,7 @@ class Lot(models.Model):
     date_received = models.DateTimeField(null=True, blank=True)
     note = models.ForeignKey(
         NoteLot, on_delete=models.CASCADE, null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
 
     @property
     def remaining_days(self):
