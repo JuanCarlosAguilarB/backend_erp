@@ -12,50 +12,40 @@ from rest_framework.views import APIView
 
 # models
 from apps.contracts.models import (
-    Contract, OrdenOfWork,
-    ItemsOrdenOfWork, Size, StateLot,
-    NoteLot, Lot)
+    Contratos, OrdenDeTrabajo,
+    Lotes, Personal)
 
 # serializers
 from apps.contracts.serializers import (
-    ContractSerializer, OrdenOfWorkSerializer,
-    ItemsOrdenOfWorkSerializer, SizeSerializer,
-    StateLotSerializer, NoteLotSerializer,
-    LotSerializer)
+    ContratosSerializer, OrdenDeTrabajoSerializer,
+    LotesSerializer, PersonalSerializer,
+)
 
 
-class ListContrats(generics.ListAPIView):
+class ListContrats(viewsets.ModelViewSet):
     """
     List all contracts
     """
-    queryset = Contract.objects.all()
-    serializer_class = ContractSerializer
+    queryset = Contratos.objects.all()
+    serializer_class = ContratosSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    # def get_queryset(self):
-    #     """
-    #     This view should return a list of all the contracts
-    #     for the currently authenticated user.
-    #     """
-    #     user = self.request.user
-    #     return Contract.objects.filter(supervisor=user)
 
 
 class OrdenOfWorkView(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = OrdenOfWork.objects.all()
-    serializer_class = OrdenOfWorkSerializer
+    queryset = OrdenDeTrabajo.objects.all()
+    serializer_class = OrdenDeTrabajoSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
 
-class ItemsOrdenOfWorkView(viewsets.ModelViewSet):
+class PersonasView(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = ItemsOrdenOfWork.objects.all()
-    serializer_class = ItemsOrdenOfWorkSerializer
+    queryset = Personal.objects.all()
+    serializer_class = PersonalSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
 
@@ -63,6 +53,6 @@ class LotView(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Lot.objects.all()
-    serializer_class = LotSerializer
+    queryset = Lotes.objects.all()
+    serializer_class = LotesSerializer
     # permission_classes = [permissions.IsAuthenticated]

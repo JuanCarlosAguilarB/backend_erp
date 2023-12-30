@@ -3,63 +3,35 @@ from rest_framework import serializers
 
 # models
 from apps.contracts.models import (
-    Contract, OrdenOfWork,
-    ItemsOrdenOfWork, Size, StateLot,
-    NoteLot, Lot)
+    Contratos, OrdenDeTrabajo,
+    Lotes, Personal)
 
 
-class ContractSerializer(serializers.ModelSerializer):
+class ContratosSerializer(serializers.ModelSerializer):
 
     entity = serializers.StringRelatedField()
 
     class Meta:
-        model = Contract
+        model = Contratos
         fields = '__all__'
 
 
-class ItemsOrdenOfWorkSerializer(serializers.ModelSerializer):
+class OrdenDeTrabajoSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ItemsOrdenOfWork
+        model = OrdenDeTrabajo
         fields = '__all__'
 
 
-class OrdenOfWorkSerializer(serializers.ModelSerializer):
-
-    items = ItemsOrdenOfWorkSerializer(source='ordenofwork_set', many=True)
+class LotesSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = OrdenOfWork
+        model = Lotes
         fields = '__all__'
 
 
-class SizeSerializer(serializers.ModelSerializer):
+class PersonalSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Size
-        fields = '__all__'
-
-
-class StateLotSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = StateLot
-        fields = '__all__'
-
-
-class NoteLotSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = NoteLot
-        fields = '__all__'
-
-
-class LotSerializer(serializers.ModelSerializer):
-
-    size = SizeSerializer()
-    note = NoteLotSerializer()
-    state = StateLotSerializer()
-
-    class Meta:
-        model = Lot
+        model = Personal
         fields = '__all__'

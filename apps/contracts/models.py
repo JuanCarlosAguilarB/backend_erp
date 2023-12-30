@@ -10,127 +10,65 @@ from django.utils import timezone
 from apps.user.models import User
 
 
-class Entity(models.Model):
+class Contratos(models.Model):
 
-    name = models.CharField(max_length=100)
+    numero_contrato = models.CharField(max_length=100)
+    entidad = models.CharField(max_length=100)
+    objeto = models.CharField(max_length=255)
+    plazo_de_ejecucion = models.DateTimeField()
+    supervisor = models.CharField(max_length=100)
+    estado = models.CharField(max_length=100)  # (En progreso - Finalizado)
     description = models.TextField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # @property
+    # Valor total	Int	Valor del contrato 	Calculo de OT
+    @property
+    def dias_de_entrega_restantes(self):
+        return (self.plazo_de_ejecucion - timezone.now()).days
+
+    def __str__(self):
+        return f'{self.id} - No contrato: {self.numero_contrato}'
+
+
+class OrdenDeTrabajo(models.Model):
+
+    numero_de_orden = models.IntegerField()
+    item = models.CharField(max_length=255)
+    valor_unitario = models.IntegerField()
+    cantidad = models.IntegerField()
+    numero_de_contrato = models.CharField(max_length=100)
+    estado = models.CharField(max_length=100)  # (En progeso - Finalizado)
+    # (Masculino - Femenino - Unisex - N/A)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.id} - {self.name}'
+        return f'{self.id} - No order: {self.numero_de_orden}'
 
 
-class Contract(models.Model):
+class Lotes(models.Model):
 
-    # entity = models.ForeignKey(Entity, on_delete=models.CASCADE,
-    #                            null=True, blank=True)
-    number_contrat = models.CharField(max_length=100, primary_key=True)
-    company = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    delivery_date = models.DateTimeField()
-    amount = models.IntegerField()
-    supervisor = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    @property
-    def remaining_days(self):
-        return (self.delivery_date - timezone.now()).days
-
-    def __str__(self):
-        return f'{self.id} - {self.name}'
+    numero_de_lote = models.IntegerField()
+    numero_de_contrato = models.CharField(max_length=100)
+    numero_de_orden = models.IntegerField()
+    talla = models.CharField(max_length=100)
+    cantidad = models.IntegerField()
+    # ( "Nadie"-Corte - Confeccion - Finalizado)
+    asignado = models.CharField(max_length=100)
+    estado = models.CharField(max_length=100)  # (En progeso - Finalizado)
+    fecha_recibido = models.DateTimeField()
+    historial = models.CharField(max_length=100)
+    novedad = models.CharField(max_length=100)
 
 
-class OrdenOfWork(models.Model):
+class Personal(models.Model):
 
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    number_orden = models.CharField(max_length=100)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    order_delivery_date = models.DateTimeField()
-    amount_of_order = models.IntegerField()
-
-    @property
-    def remaining_days(self):
-        return (self.delivery_date - timezone.now()).days
-
-    # def save(self, *args, **kwargs):
-
-    #     # sum of amount_of_order of all orders
-    #     sum_amount_of_order = OrdenOfWork.objects.filter(
-    #         contract=self.contract).aggregate(models.Sum('amount_of_order'))['amount_of_order__sum']
-
-    #     # throw error if the sum of amount_of_order of all orders is greater than amount of contract
-    #     if sum_amount_of_order > self.contract.amount:
-    #         raise ValueError(
-    #             'The amount of order is greater than amount of contract')
-
-    #     super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f'{self.id} - No order: {self.number_orden}'
-
-
-class ItemsOrdenOfWork(models.Model):
-
-    orden_of_work = models.ForeignKey(OrdenOfWork, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.id} - No order: {self.number_orden.number_orden}'
-
-
-class Size(models.Model):
-
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-
-
-class StateLot(models.Model):
-
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-
-
-class NoteLot(models.Model):
-
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class Lot(models.Model):
-
-    orden_of_work = models.ForeignKey(OrdenOfWork, on_delete=models.CASCADE)
-    item_orden_of_work = models.ForeignKey(
-        ItemsOrdenOfWork, on_delete=models.CASCADE)
-    size = models.ForeignKey(Size, on_delete=models.CASCADE)
-    amount = models.IntegerField()
-    state = models.ForeignKey(StateLot, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    date_received = models.DateTimeField(null=True, blank=True)
-    note = models.ForeignKey(
-        NoteLot, on_delete=models.CASCADE, null=True, blank=True)
-    comment = models.TextField(null=True, blank=True)
-
-    @property
-    def remaining_days(self):
-        return (self.delivery_date - timezone.now()).days
-
-    def save(self, *args, **kwargs):
-
-        # # sum of amount_of_order of all orders
-        # sum_amount_of_order = OrdenOfWork.objects.filter(
-        #     contract=self.contract).aggregate(models.Sum('amount_of_order'))['amount_of_order__sum']
-
-        # # throw error if the sum of amount_of_order of all orders is greater than amount of contract
-        # if sum_amount_of_order > self.contract.amount:
-        #     raise ValueError(
-        #         'The amount of order is greater than amount of contract')
-
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f'{self.id} - No order: {self.number_orden}'
+    Usuario = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    area = models.CharField(max_length=100)
+    cargo = models.CharField(max_length=100)
