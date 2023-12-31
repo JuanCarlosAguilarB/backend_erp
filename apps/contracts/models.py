@@ -28,7 +28,7 @@ class Contratos(models.Model):
     @property
     def dias_de_entrega_restantes(self):
         dias = (self.plazo_de_ejecucion - timezone.now()).days
-        return dias if dias > 0 else 0
+        return dias if dias > 0 else -dias
 
     def __str__(self):
         return f'{self.id} - No contrato: {self.numero_contrato}'
