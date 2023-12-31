@@ -2,7 +2,7 @@
 from django.urls import path, include
 
 # Views imports
-from apps.contracts.views import ListContrats, OrdenOfWorkView, PersonasView, LotView
+from apps.contracts.views import ListContrats, OrdenOfWorkView, PersonasView, LotView, PersonasMeView
 
 # import router of drf
 from rest_framework import routers
@@ -16,6 +16,7 @@ router.register(r'contract', ListContrats, basename='contracts')
 
 urlpatterns = [
     # path('contracts/', ListContrats.as_view(), name='list-contracts'),
+    path('personas/me/', PersonasMeView.as_view(), name='list-contract'),
     path('', include(router.urls)),
 
 ]

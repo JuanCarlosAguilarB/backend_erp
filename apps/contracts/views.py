@@ -56,3 +56,29 @@ class LotView(viewsets.ModelViewSet):
     queryset = Lotes.objects.all()
     serializer_class = LotesSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
+
+class PersonasMeView(APIView):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Personal.objects.all()
+    serializer_class = PersonalSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        user = request.user
+        print(user)
+        persona = Personal.objects.filter(user=user).first()
+
+        data = {
+            'id': user.id,
+            # 'username': user.username,
+            # 'email': user.email,
+            'phone': user.phone,
+            'photo': user.photo.url if user.photo else '',
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'cargo': persona.cargo if persona else None,
+        }
+        return Response(data, status=status.HTTP_200_OK)
