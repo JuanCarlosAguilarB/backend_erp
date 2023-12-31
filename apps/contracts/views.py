@@ -1,3 +1,4 @@
+from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import render
 # Create your views here.
 
@@ -81,4 +82,26 @@ class PersonasMeView(APIView):
             'last_name': user.last_name,
             'cargo': persona.cargo if persona else None,
         }
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class OrdenDeTrabajoPorContrato(APIView, LimitOffsetPagination):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+
+    def get(self, request, format=None, *args, **kwargs):
+
+        id = kwargs['id']
+        contrato = Contratos.objects.filter(id=id).first()
+
+        if not contrato:
+            return Response({'detail': 'No existe el contrato'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        ordenes_de_trabajo = OrdenDeTrabajo.objects.filter(
+            numero_de_contrato=contrato.numero_contrato)
+
+        data = OrdenDeTrabajoSerializer(ordenes_de_trabajo, many=True).data
+
         return Response(data, status=status.HTTP_200_OK)
