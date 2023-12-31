@@ -27,7 +27,7 @@ class Contratos(models.Model):
     # Valor total	Int	Valor del contrato 	Calculo de OT
     @property
     def dias_de_entrega_restantes(self):
-        return (self.plazo_de_ejecucion - timezone.now()).days
+        return (timezone.now() - self.plazo_de_ejecucion).days
 
     def __str__(self):
         return f'{self.id} - No contrato: {self.numero_contrato}'

@@ -9,7 +9,8 @@ from apps.contracts.models import (
 
 class ContratosSerializer(serializers.ModelSerializer):
 
-    entity = serializers.StringRelatedField()
+    tiempo_restante = serializers.CharField(
+        source='dias_de_entrega_restantes', read_only=True)
 
     class Meta:
         model = Contratos
