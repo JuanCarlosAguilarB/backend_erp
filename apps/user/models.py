@@ -133,8 +133,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f'{self.id} {self.first_name} {self.last_name}'
-
-    def get_user_profile_photo(self):
-        if self.photo:
-            return self.photo.url
-        return ''
