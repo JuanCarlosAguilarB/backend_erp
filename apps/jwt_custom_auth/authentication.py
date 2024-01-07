@@ -133,8 +133,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
                 hours=settings.JWT_CONF['TOKEN_LIFETIME_HOURS'])).timestamp()),
             # set the expiration time for 5 hour from now
             'iat': datetime.now().timestamp(),
-            'email': user.email,
-            'phone': user.phone
+            'username': user.username
         }
 
         # Encode the JWT with your secret key

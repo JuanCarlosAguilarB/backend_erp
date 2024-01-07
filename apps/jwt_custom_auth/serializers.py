@@ -15,7 +15,7 @@ class ObtainTokenSerializer(serializers.Serializer):
         password (serializers.CharField):
             A CharField representing the password of the user.
     """
-    phone = serializers.CharField()
+    username = serializers.CharField()
     password = serializers.CharField()
 
 

@@ -23,10 +23,10 @@ User = get_user_model()
 
 class ObtainUserLoginMiddleware():
     """
-    Middleware class for user login using phone or phone number.
+    Middleware class for user login using username or username number.
 
-    This middleware class is responsible for authenticating users based on their phone or phone number.
-    It takes the user's phone/phone number and password from the request data and attempts to authenticate
+    This middleware class is responsible for authenticating users based on their username or username number.
+    It takes the user's username/username number and password from the request data and attempts to authenticate
     the user using the 'User' model in the Django database.
 
     Attributes:
@@ -38,7 +38,7 @@ class ObtainUserLoginMiddleware():
 
     Methods:
         get_user():
-            Authenticate the user using the provided phone/phone number and password.
+            Authenticate the user using the provided username/username number and password.
 
     Returns:
         User instance or bool: The authenticated user object if authentication is successful,
@@ -50,11 +50,11 @@ class ObtainUserLoginMiddleware():
 
     def get_user(self):
         """
-        Authenticate the user using the provided phone/phone number and password.
+        Authenticate the user using the provided username/username number and password.
 
-        This method attempts to authenticate the user by validating the phone/phone number and password
+        This method attempts to authenticate the user by validating the username/username number and password
         provided in the request data using the 'ObtainTokenSerializer'. It queries the 'User' model in
-        the Django database based on the phone/phone number and checks the password for authentication.
+        the Django database based on the username/username number and checks the password for authentication.
 
         Returns:
             django.contrib.auth.models.User or bool: The authenticated user object if authentication
@@ -64,13 +64,13 @@ class ObtainUserLoginMiddleware():
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username_or_phone_number = serializer.validated_data.get('phone')
+        username_or_phone_number = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
 
-        user = User.objects.filter(phone=username_or_phone_number).first()
+        user = User.objects.filter(username=username_or_phone_number).first()
         if user is None:
             user = User.objects.filter(
-                phone=username_or_phone_number).first()
+                username=username_or_phone_number).first()
 
         if user is None or not user.check_password(password):
             return False
