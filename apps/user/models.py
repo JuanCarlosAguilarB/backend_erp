@@ -110,21 +110,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     Model by create and save a user with given email and password.
     """
 
-    first_name = models.CharField(max_length=50, blank=True, null=True)
-    last_name = models.CharField(max_length=50, blank=True, null=True)
-    phone = models.CharField(max_length=50, unique=True)
+    nombres = models.CharField(max_length=50, blank=True, null=True)
+    apellidos = models.CharField(max_length=50, blank=True, null=True)
+    username = models.CharField(max_length=50, unique=True)
+    area = models.CharField(max_length=100)
+    cargo = models.CharField(max_length=100)
 
     password = models.CharField(max_length=128)
 
-    photo = models.ImageField(max_length=50, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.BooleanField(default=True)  # for delete account
+    estatus = models.BooleanField(default=True)  # for delete account
 
     # fields that to need django auth models
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    USERNAME_FIELD = 'phone'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()

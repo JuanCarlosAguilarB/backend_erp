@@ -63,13 +63,3 @@ class Lotes(models.Model):
     fecha_recibido = models.DateTimeField()
     historial = models.CharField(max_length=100)
     novedad = models.CharField(max_length=100)
-
-
-class Personal(models.Model):
-
-    Usuario = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    nombres = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
-    area = models.CharField(max_length=100)
-    cargo = models.CharField(max_length=100)

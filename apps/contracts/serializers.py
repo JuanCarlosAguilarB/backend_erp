@@ -4,7 +4,9 @@ from rest_framework import serializers
 # models
 from apps.contracts.models import (
     Contratos, OrdenDeTrabajo,
-    Lotes, Personal)
+    Lotes)
+
+from apps.user.models import User
 
 
 class ContratosSerializer(serializers.ModelSerializer):
@@ -29,10 +31,11 @@ class LotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lotes
         fields = '__all__'
+        
 
 
 class PersonalSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Personal
-        fields = '__all__'
+        model = User
+        exclude = ('password',)

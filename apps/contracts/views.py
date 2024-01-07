@@ -14,7 +14,9 @@ from rest_framework.views import APIView
 # models
 from apps.contracts.models import (
     Contratos, OrdenDeTrabajo,
-    Lotes, Personal)
+    Lotes)
+
+from apps.user.models import User
 
 # serializers
 from apps.contracts.serializers import (
@@ -45,7 +47,7 @@ class PersonasView(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Personal.objects.all()
+    queryset = User.objects.all()
     serializer_class = PersonalSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
@@ -63,24 +65,20 @@ class PersonasMeView(APIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Personal.objects.all()
+    queryset = User.objects.all()
     serializer_class = PersonalSerializer
     # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
         user = request.user
         print(user)
-        persona = Personal.objects.filter(user=user).first()
 
         data = {
             'id': user.id,
-            # 'username': user.username,
-            # 'email': user.email,
-            'phone': user.phone,
-            'photo': user.photo.url if user.photo else '',
+            'username': user.username,
             'first_name': user.first_name,
-            'last_name': user.last_name,
-            'cargo': persona.cargo if persona else None,
+            'last_name': user.area,
+            'cargo': user.cargo,
         }
         return Response(data, status=status.HTTP_200_OK)
 
