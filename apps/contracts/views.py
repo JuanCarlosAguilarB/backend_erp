@@ -1,3 +1,5 @@
+from rest_framework.permissions import AllowAny  # Importar AllowAny
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import render
 # Create your views here.
@@ -83,10 +85,12 @@ class PersonasMeView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-class OrdenDeTrabajoPorContrato(APIView, LimitOffsetPagination):
+class OrdenDeTrabajoPorContrato(APIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
+
+    permission_classes = [AllowAny]  # Permitir cualquier persona
 
     def get(self, request, format=None, *args, **kwargs):
 
@@ -100,6 +104,38 @@ class OrdenDeTrabajoPorContrato(APIView, LimitOffsetPagination):
         ordenes_de_trabajo = OrdenDeTrabajo.objects.filter(
             numero_de_contrato=contrato.numero_contrato)
 
-        data = OrdenDeTrabajoSerializer(ordenes_de_trabajo, many=True).data
+        # Paginar los resultados
+        paginator = PageNumberPagination()
+        paginated_ordenes = paginator.paginate_queryset(
+            ordenes_de_trabajo, request)
 
-        return Response(data, status=status.HTTP_200_OK)
+        data = OrdenDeTrabajoSerializer(paginated_ordenes, many=True).data
+
+        return paginator.get_paginated_response(data)
+
+
+class LotesDeTrabajoPorContrato(APIView):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    permission_classes = [AllowAny]  # Permitir cualquier persona
+
+    def get(self, request, format=None, *args, **kwargs):
+        id = kwargs['id']
+        contrato = Contratos.objects.filter(id=id).first()
+
+        if not contrato:
+            return Response({'detail': 'No existe el contrato'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        lotes_de_trabajo = Lotes.objects.filter(
+            numero_de_contrato=contrato.numero_contrato)
+
+        # Paginar los resultados
+        paginator = PageNumberPagination()
+        paginated_lotes = paginator.paginate_queryset(
+            lotes_de_trabajo, request)
+
+        data = LotesSerializer(paginated_lotes, many=True).data
+
+        return paginator.get_paginated_response(data)
