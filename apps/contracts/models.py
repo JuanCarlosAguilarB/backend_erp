@@ -45,6 +45,7 @@ class OrdenDeTrabajo(models.Model):
     # (Masculino - Femenino - Unisex - N/A)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    genero = models.CharField(max_length=100)
 
     def __str__(self):
         return f'{self.id} - No order: {self.numero_de_orden}'
