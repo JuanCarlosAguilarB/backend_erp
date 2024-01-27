@@ -31,6 +31,19 @@ class ListContrats(viewsets.ModelViewSet):
     """
     List all contracts
     """
+
+    def get_queryset(self):
+
+        queryseet = super().get_queryset()
+
+        estado_lotes = self.request.query_params.get('estado', None)
+        if estado_lotes is not None:
+            queryseet = queryseet.filter(estado=estado_lotes)
+
+        return queryseet
+
+    permission_classes = [AllowAny]  # Permitir cualquier persona
+
     queryset = Contratos.objects.all()
     serializer_class = ContratosSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -58,6 +71,18 @@ class LotView(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+
+    def get_queryset(self):
+
+        queryseet = super().get_queryset()
+
+        estado_lotes = self.request.query_params.get('estado', None)
+        if estado_lotes is not None:
+            queryseet = queryseet.filter(estado=estado_lotes)
+
+        return queryseet
+
+    permission_classes = [AllowAny]  # Permitir cualquier persona
     queryset = Lotes.objects.all()
     serializer_class = LotesSerializer
     # permission_classes = [permissions.IsAuthenticated]
@@ -131,6 +156,65 @@ class LotesDeTrabajoPorContrato(APIView):
         lotes_de_trabajo = Lotes.objects.filter(
             numero_de_contrato=contrato.numero_contrato)
 
+        # Paginar los resultados
+        paginator = PageNumberPagination()
+        paginated_lotes = paginator.paginate_queryset(
+            lotes_de_trabajo, request)
+
+        data = LotesSerializer(paginated_lotes, many=True).data
+
+        return paginator.get_paginated_response(data)
+
+
+class LotesDeTrabajoPorOrdenDeTrabajo(APIView):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    permission_classes = [AllowAny]  # Permitir cualquier persona
+
+    def get(self, request, format=None, *args, **kwargs):
+        id = kwargs['id']
+        orden_de_trabajo = OrdenDeTrabajo.objects.filter(id=id).first()
+
+        if not orden_de_trabajo:
+            return Response({'detail': 'No existe el orden de trabajo'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        lotes_de_trabajo = Lotes.objects.filter(
+            numero_de_orden=orden_de_trabajo.numero_de_orden)
+
+        # get the number of the contract of query params
+        estado_lotes = request.query_params.get('estado', None)
+        if estado_lotes is not None:
+            lotes_de_trabajo = lotes_de_trabajo.filter(estado=estado_lotes)
+
+        # Paginar los resultados
+        paginator = PageNumberPagination()
+        paginated_lotes = paginator.paginate_queryset(
+            lotes_de_trabajo, request)
+
+        data = LotesSerializer(paginated_lotes, many=True).data
+
+        return paginator.get_paginated_response(data)
+
+
+class LotesDeTrabajoAsignado(APIView):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    permission_classes = [AllowAny]  # Permitir cualquier persona
+
+    def get(self, request, format=None, *args, **kwargs):
+        area = kwargs['area']
+        lotes_de_trabajo = Lotes.objects.filter(
+            asignado__icontains=area)
+
+        # get the number of the contract of query params
+        estado_lotes = request.query_params.get('estado', None)
+        if estado_lotes is not None:
+            lotes_de_trabajo = lotes_de_trabajo.filter(estado=estado_lotes)
+        else:
+            lotes_de_trabajo = lotes_de_trabajo.filter(estado="Finalizado")
         # Paginar los resultados
         paginator = PageNumberPagination()
         paginated_lotes = paginator.paginate_queryset(
