@@ -214,7 +214,7 @@ class LotesDeTrabajoAsignado(APIView):
         if estado_lotes is not None:
             lotes_de_trabajo = lotes_de_trabajo.filter(estado=estado_lotes)
         else:
-            lotes_de_trabajo = lotes_de_trabajo.filter(estado="Finalizado")
+            lotes_de_trabajo = lotes_de_trabajo.exclude(estado="Finalizado")
         # Paginar los resultados
         paginator = PageNumberPagination()
         paginated_lotes = paginator.paginate_queryset(
