@@ -6,7 +6,7 @@ from apps.contracts.views import (
     ListContrats, OrdenOfWorkView,
     PersonasView, LotView, PersonasMeView,
     OrdenDeTrabajoPorContrato, LotesDeTrabajoPorContrato,
-    LotesDeTrabajoPorOrdenDeTrabajo, LotesDeTrabajoAsignado)
+    LotesDeTrabajoPorOrdenDeTrabajo, LotesDeTrabajoAsignado, SatelitesView)
 
 # import router of drf
 from rest_framework import routers
@@ -17,6 +17,7 @@ router.register(r'lotes', LotView, basename='lotes')
 router.register(r'orden_de_trabajo', OrdenOfWorkView, basename='orden_of_work')
 router.register(r'personas', PersonasView, basename='items')
 router.register(r'contract', ListContrats, basename='contracts')
+router.register(r'satelites', SatelitesView, basename='satelites')
 
 urlpatterns = [
     # path('contracts/', ListContrats.as_view(), name='list-contracts'),

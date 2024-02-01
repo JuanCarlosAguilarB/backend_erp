@@ -64,3 +64,10 @@ class Lotes(models.Model):
     fecha_recibido = models.DateTimeField()
     historial = models.CharField(max_length=100)
     novedad = models.CharField(max_length=100)
+
+
+class Satelites(models.Model):
+    """ class for satelites"""
+
+    nombre = models.CharField(max_length=255)
+    contacto = models.CharField(max_length=255)

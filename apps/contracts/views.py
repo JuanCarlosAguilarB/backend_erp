@@ -16,14 +16,14 @@ from rest_framework.views import APIView
 # models
 from apps.contracts.models import (
     Contratos, OrdenDeTrabajo,
-    Lotes)
+    Lotes, Satelites)
 
 from apps.user.models import User
 
 # serializers
 from apps.contracts.serializers import (
     ContratosSerializer, OrdenDeTrabajoSerializer,
-    LotesSerializer, PersonalSerializer,
+    LotesSerializer, PersonalSerializer, SatelitesSerializer
 )
 
 
@@ -223,3 +223,12 @@ class LotesDeTrabajoAsignado(APIView):
         data = LotesSerializer(paginated_lotes, many=True).data
 
         return paginator.get_paginated_response(data)
+
+
+class SatelitesView(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Satelites.objects.all()
+    serializer_class = SatelitesSerializer
+    permission_classes = [AllowAny,]  # Permitir cualquier persona
