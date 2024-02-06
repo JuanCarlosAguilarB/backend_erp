@@ -156,6 +156,11 @@ class LotesDeTrabajoPorContrato(APIView):
         lotes_de_trabajo = Lotes.objects.filter(
             numero_de_contrato=contrato.numero_contrato)
 
+        # get the number of the contract of query params
+        estado_lotes = request.query_params.get('estado', None)
+        if estado_lotes is not None:
+            lotes_de_trabajo = lotes_de_trabajo.filter(estado=estado_lotes)
+
         # Paginar los resultados
         paginator = PageNumberPagination()
         paginated_lotes = paginator.paginate_queryset(
