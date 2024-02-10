@@ -23,8 +23,15 @@ class Contratos(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    cantidad_total = models.IntegerField(null=True, blank=True)
+    valor_total = models.IntegerField(null=True, blank=True)
+    unidades_faltantes = models.IntegerField(null=True, blank=True)
+    unidades_en_progreso = models.IntegerField(null=True, blank=True)
+    unidades_cumplidas = models.IntegerField(null=True, blank=True)
+
     # @property
     # Valor total	Int	Valor del contrato 	Calculo de OT
+
     @property
     def dias_de_entrega_restantes(self):
         dias = (self.plazo_de_ejecucion - timezone.now()).days
