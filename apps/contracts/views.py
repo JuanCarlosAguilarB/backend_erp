@@ -1,8 +1,14 @@
+import datetime
+from django.utils.timezone import is_aware, make_naive
+from django.http import HttpResponse
+from openpyxl import Workbook
+from django.http import HttpResponseBadRequest
 from rest_framework.permissions import AllowAny  # Importar AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import render
 # Create your views here.
+
 
 # Rest Framework imports
 from rest_framework import viewsets
@@ -237,3 +243,71 @@ class SatelitesView(viewsets.ModelViewSet):
     queryset = Satelites.objects.all()
     serializer_class = SatelitesSerializer
     permission_classes = [AllowAny,]  # Permitir cualquier persona
+
+
+class ExcelGeneratorView(APIView):
+
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Satelites.objects.all()
+    serializer_class = SatelitesSerializer
+    permission_classes = [AllowAny,]  # Permitir cualquier persona
+
+
+# import HttpResponse
+
+
+class ExcelGeneratorView(APIView):
+    permission_classes = [AllowAny,]  # Permitir cualquier persona
+
+    def get(self, request, *args, **kwargs):
+        models = request.GET.getlist('models', [])
+
+        if not models:
+            return Response({"error": "No se proporcionaron modelos."}, status=400)
+
+        wb = Workbook()
+
+        try:
+            for model_name in models:
+                model = Contratos
+
+                w1 = wb.create_sheet(title=model_name)
+
+                field_names = [field.name for field in model._meta.fields]
+                w1.append(field_names)
+                for obj in model.objects.all():
+                    row = []
+                    for field in obj._meta.fields:
+                        value = getattr(obj, field.name)
+                        if isinstance(value, datetime.datetime):
+                            if is_aware(value):
+                                value = make_naive(value)
+                        row.append(value)
+                    w1.append(row)
+                
+                w2 = wb.create_sheet(title=model_name)
+
+                model = Lotes
+                field_names = [field.name for field in model._meta.fields]
+                w2.append(field_names)
+                for obj in model.objects.all():
+                    row = []
+                    for field in obj._meta.fields:
+                        value = getattr(obj, field.name)
+                        if isinstance(value, datetime.datetime):
+                            if is_aware(value):
+                                value = make_naive(value)
+                        row.append(value)
+                    w2.append(row)
+                
+
+            response = HttpResponse(
+                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+            wb.save(response)
+            return response
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
