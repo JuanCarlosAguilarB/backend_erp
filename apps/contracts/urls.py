@@ -6,7 +6,8 @@ from apps.contracts.views import (
     ListContrats, OrdenOfWorkView,
     PersonasView, LotView, PersonasMeView,
     OrdenDeTrabajoPorContrato, LotesDeTrabajoPorContrato,
-    LotesDeTrabajoPorOrdenDeTrabajo, LotesDeTrabajoAsignado, SatelitesView)
+    LotesDeTrabajoPorOrdenDeTrabajo, LotesDeTrabajoAsignado, SatelitesView, 
+    ExcelGeneratorView)
 
 # import router of drf
 from rest_framework import routers
@@ -22,16 +23,16 @@ router.register(r'satelites', SatelitesView, basename='satelites')
 urlpatterns = [
     # path('contracts/', ListContrats.as_view(), name='list-contracts'),
     path('personas/me/', PersonasMeView.as_view(), name='list-contract'),
-    path('orden_de_trabajo/<int:id>/lotes/',
+    path('orden_de_trabajo/<str:id>/lotes/',
          LotesDeTrabajoPorOrdenDeTrabajo.as_view(),
          name='list-contract_'),
     path('lotes/asignado/<str:area>/',
          LotesDeTrabajoAsignado.as_view(),
          name='list-contract_'),
-    path('contract/<int:id>/orden_de_trabajo',
+    path('contract/<str:id>/orden_de_trabajo',
          OrdenDeTrabajoPorContrato.as_view(), name='list-contracts_'),
-    path('contract/<int:id>/lotes',
+    path('contract/<str:id>/lotes',
          LotesDeTrabajoPorContrato.as_view(), name='list-lotes_'),
     path('', include(router.urls)),
-
+    path('excel/', ExcelGeneratorView.as_view(), name='excel'),
 ]
