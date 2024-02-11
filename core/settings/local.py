@@ -13,6 +13,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
+    "54.224.204.103"
 ]
 
 RENDER_EXTERNAL_HOSTNAME = env_aux.get('RENDER_EXTERNAL_HOSTNAME', None)
