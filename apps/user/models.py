@@ -132,4 +132,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'user_auth'
 
     def __str__(self):
-        return f'{self.id} {self.first_name} {self.last_name}'
+        return f'{self.id}'
