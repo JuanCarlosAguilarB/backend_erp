@@ -105,15 +105,15 @@ class PersonasMeView(APIView):
     def get(self, request, format=None):
         user = request.user
         print(user)
-
-        data = {
-            'id': user.id,
-            'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.area,
-            'cargo': user.cargo,
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        serializer_data = PersonalSerializer(user).data
+        # data = {
+        #     'id': user.id,
+        #     'username': user.username,
+        #     'first_name': user.first_name,
+        #     'last_name': user.area,
+        #     'cargo': user.cargo,
+        # }
+        return Response(serializer_data, status=status.HTTP_200_OK)
 
 
 class OrdenDeTrabajoPorContrato(APIView):
@@ -286,7 +286,7 @@ class ExcelGeneratorView(APIView):
                                 value = make_naive(value)
                         row.append(value)
                     w1.append(row)
-                
+
                 w2 = wb.create_sheet(title=model_name)
 
                 model = Lotes
@@ -301,7 +301,6 @@ class ExcelGeneratorView(APIView):
                                 value = make_naive(value)
                         row.append(value)
                     w2.append(row)
-                
 
             response = HttpResponse(
                 content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
