@@ -71,6 +71,7 @@ class Lotes(models.Model):
     fecha_recibido = models.DateTimeField()
     historial = models.CharField(max_length=100)
     novedad = models.CharField(max_length=100)
+    usuario = models.CharField(max_length=100, null=True, blank=True)
 
 
 class Satelites(models.Model):

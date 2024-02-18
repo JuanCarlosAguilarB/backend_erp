@@ -70,6 +70,14 @@ class PersonasView(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = PersonalSerializer
+    permission_classes = [AllowAny]  # Permitir cualquier persona
+
+    def get_queryset(self):
+        cargo = self.request.query_params.get('cargo', None)
+        if cargo is not None:
+            return User.objects.filter(cargo=cargo)
+        return super().get_queryset()
+
     # permission_classes = [permissions.IsAuthenticated]
 
 
@@ -100,7 +108,7 @@ class PersonasMeView(APIView):
     """
     queryset = User.objects.all()
     serializer_class = PersonalSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AllowAny]  # Permitir cualquier persona
 
     def get(self, request, format=None):
         user = request.user
